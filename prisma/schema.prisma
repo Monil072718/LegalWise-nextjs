@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orders        Order[]
+  lawyerHires   LawyerHire[]
+  chatHistory   ChatHistory[]
+}
+
+model Lawyer {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  password      String
+  specialization String
+  experience    Int
+  bio           String
+  imageUrl      String?
+  rating        Float     @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  hires         LawyerHire[]
+}
+
+model Book {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  author        String
+  description   String
+  price         Float
+  imageUrl      String?
+  category      String
+  stock         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orderItems    OrderItem[]
+}
+
+model Article {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  content       String
+  author        String
+  category      String
+  imageUrl      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Document {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  fileUrl       String
+  category      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Order {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id])
+  status        OrderStatus @default(PENDING)
+  total         Float
+  address       String
+  phone         String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orderItems    OrderItem[]
+}
+
+model OrderItem {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  orderId       String    @db.ObjectId
+  order         Order     @relation(fields: [orderId], references: [id])
+  bookId        String    @db.ObjectId
+  book          Book      @relation(fields: [bookId], references: [id])
+  quantity      Int
+  price         Float
+}
+
+model LawyerHire {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id])
+  lawyerId      String    @db.ObjectId
+  lawyer        Lawyer    @relation(fields: [lawyerId], references: [id])
+  caseDetails   String
+  status        HireStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ChatHistory {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String    @db.ObjectId
+  user          User      @relation(fields: [userId], references: [id])
+  messages      Json[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  LAWYER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+enum HireStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
