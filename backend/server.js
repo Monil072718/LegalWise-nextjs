@@ -7,6 +7,10 @@ import orderRoutes from "./routes/orderRoutes.js";
 import hireRoutes from "./routes/lawyerHireRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import bookRoutes from "./routes/bookRoutes.js";
+import lawyerRoutes from "./routes/lawyerRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
+import articleRoutes from "./routes/articleRoutes.js";
 
 dotenv.config();
 
@@ -30,6 +34,10 @@ app.use("/api/users/orders", orderRoutes);
 app.use("/api/users/hires", hireRoutes);
 app.use("/api/users/messages", chatRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/api/lawyers", lawyerRoutes);
+app.use("/api/documents", documentRoutes);
+app.use("/api/articles", articleRoutes);
 
 // Health
 app.get("/", (_req, res) => res.send("✅ API is running"));
