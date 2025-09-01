@@ -17,7 +17,7 @@ dotenv.config();
 console.log("📂 ENV loaded");
 if (!process.env.DATABASE_URL) {
   console.error("❌ DATABASE_URL missing in .env");
-  process.exit(1);
+  process.exit(1); // exit with failure
 }
 console.log("📡 DB URL present");
 
