@@ -1,13 +1,11 @@
 import CredentialsProvider from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { db } from "@/lib/db"
 import { compare } from "bcrypt"
 
 export const authOptions = {
-  adapter: PrismaAdapter(db),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // using JWT sessions
   },
   pages: {
     signIn: "/login",
@@ -20,26 +18,18 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
+        if (!credentials?.email || !credentials?.password) return null
 
         const user = await db.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
+          where: { email: credentials.email },
         })
 
-        if (!user) {
-          return null
-        }
+        if (!user) return null
 
         const passwordMatch = await compare(credentials.password, user.password)
+        if (!passwordMatch) return null
 
-        if (!passwordMatch) {
-          return null
-        }
-
+        // return user object to encode in JWT
         return {
           id: user.id,
           email: user.email,
@@ -52,8 +42,8 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
         token.id = user.id
+        token.role = user.role
       }
       return token
     },
