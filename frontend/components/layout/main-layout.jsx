@@ -30,9 +30,9 @@ export default function MainLayout({ children }) {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-600 hover:text-green-600 transition-colors">
+            {/* <button className="p-2 text-gray-600 hover:text-green-600 transition-colors">
               <Search className="w-5 h-5" />
-            </button>
+            </button> */}
             <Link
               href="/consult"
               className="hidden md:inline-block text-gray-800 hover:text-green-600 font-medium transition-colors"

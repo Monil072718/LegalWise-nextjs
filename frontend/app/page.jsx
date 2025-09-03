@@ -277,7 +277,7 @@ export default function HomePage() {
                       : "translate-x-full"
                 }`}
               >
-                <div className="relative h-full bg-gradient-to-r from-green-600 to-blue-600">
+                <div className="relative h-full">
                   <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                   <div className="relative z-10 h-full flex items-center">
                     <div className="container mx-auto px-4">
