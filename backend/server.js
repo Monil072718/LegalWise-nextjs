@@ -11,6 +11,12 @@ import bookRoutes from "./routes/bookRoutes.js";
 import lawyerRoutes from "./routes/lawyerRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import caseRoutes from "./routes/caseRoutes.js";
+import appointmentRoutes from "./routes/appointmentRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import billingRoutes from "./routes/billingRoutes.js";
 
 dotenv.config();
 
@@ -38,6 +44,12 @@ app.use("/api/books", bookRoutes);
 app.use("/api/lawyers", lawyerRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/articles", articleRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/cases", caseRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/billing", billingRoutes);
 
 // Health
 app.get("/", (_req, res) => res.send("✅ API is running"));
