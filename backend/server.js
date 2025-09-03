@@ -50,6 +50,8 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/uploads", express.static("uploads"));
+
 
 // Health
 app.get("/", (_req, res) => res.send("✅ API is running"));
