@@ -7,7 +7,7 @@ const lawyerSchema = new mongoose.Schema(
     password: { type: String, required: true },
     specialization: { type: String, required: true },
     experience: { type: Number, required: true },
-    bio: { type: String, required: true },
+    bio: { type: String, required: false },
     imageUrl: { type: String },
     rating: { type: Number, default: 0 },
     availabilityStatus: {

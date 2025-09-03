@@ -7,17 +7,26 @@ import Invoice from "../models/Invoice.js";
 // ADMIN: create lawyer (email/password already created by admin in your flow)
 export const createLawyer = async (req, res) => {
   try {
-    const { name, email, password, specialization, experience, hourlyRate } = req.body;
-    const exists = await Lawyer.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Lawyer already exists" });
+    const { name, email, password, specialization, experience, bio } = req.body;
+
+    const existing = await Lawyer.findOne({ email });
+    if (existing)
+      return res.status(400).json({ message: "Email already exists" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const lawyer = await Lawyer.create({
-      name, email, password, specialization, experience, hourlyRate
+      name,
+      email,
+      password: hashedPassword,
+      specialization,
+      experience,
+      bio,
     });
 
-    return res.status(201).json(lawyer);
-  } catch (e) {
-    console.error(e);
+    res.status(201).json(lawyer);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Failed to create lawyer" });
   }
 };
@@ -38,7 +47,11 @@ export const updateLawyerProfile = async (req, res) => {
 export const setLawyerAvailability = async (req, res) => {
   const { id } = req.params;
   const { availabilityStatus } = req.body; // ONLINE/OFFLINE/BUSY
-  const updated = await Lawyer.findByIdAndUpdate(id, { availabilityStatus }, { new: true });
+  const updated = await Lawyer.findByIdAndUpdate(
+    id,
+    { availabilityStatus },
+    { new: true }
+  );
   if (!updated) return res.status(404).json({ message: "Lawyer not found" });
   res.json(updated);
 };
@@ -48,11 +61,19 @@ export const assignClientToLawyer = async (req, res) => {
   const { lawyerId, clientId } = req.body;
   const lawyer = await Lawyer.findById(lawyerId);
   const client = await User.findById(clientId);
-  if (!lawyer || !client) return res.status(404).json({ message: "Lawyer or client not found" });
+  if (!lawyer || !client)
+    return res.status(404).json({ message: "Lawyer or client not found" });
 
   // You can store connections in Case or a separate collection. We'll create a blank case shell:
-  const existing = await Case.findOne({ lawyer: lawyerId, client: clientId, status: { $ne: "CLOSED" } });
-  if (existing) return res.status(200).json({ message: "Already connected", caseId: existing._id });
+  const existing = await Case.findOne({
+    lawyer: lawyerId,
+    client: clientId,
+    status: { $ne: "CLOSED" },
+  });
+  if (existing)
+    return res
+      .status(200)
+      .json({ message: "Already connected", caseId: existing._id });
 
   const shell = await Case.create({
     title: "General Consultation",
@@ -90,7 +111,9 @@ export const adminDashboard = async (_req, res) => {
 export const revenueReport = async (_req, res) => {
   const invoices = await Invoice.aggregate([
     { $match: { status: { $in: ["SENT", "PAID"] } } },
-    { $group: { _id: "$status", total: { $sum: "$total" }, count: { $sum: 1 } } },
+    {
+      $group: { _id: "$status", total: { $sum: "$total" }, count: { $sum: 1 } },
+    },
   ]);
   res.json({ invoices });
 };
