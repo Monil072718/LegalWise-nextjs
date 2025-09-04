@@ -17,6 +17,7 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import billingRoutes from "./routes/billingRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -51,7 +52,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/billing", billingRoutes);
 app.use("/uploads", express.static("uploads"));
-
+app.use("/api/admin", adminRoutes);
 
 // Health
 app.get("/", (_req, res) => res.send("✅ API is running"));

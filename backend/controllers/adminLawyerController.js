@@ -4,30 +4,53 @@ import Case from "../models/Case.js";
 import Appointment from "../models/Appointment.js";
 import Invoice from "../models/Invoice.js";
 
-// ADMIN: create lawyer (email/password already created by admin in your flow)
+// Create Lawyer (Admin only)
 export const createLawyer = async (req, res) => {
   try {
     const { name, email, password, specialization, experience, bio } = req.body;
 
     const existing = await Lawyer.findOne({ email });
-    if (existing)
-      return res.status(400).json({ message: "Email already exists" });
+    if (existing) {
+      return res.status(400).json({ message: "Lawyer already exists" });
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const lawyer = await Lawyer.create({
+    const lawyer = new Lawyer({
       name,
       email,
-      password: hashedPassword,
+      password, // hashed automatically by pre('save')
       specialization,
       experience,
       bio,
     });
 
-    res.status(201).json(lawyer);
+    await lawyer.save();
+
+    res.status(201).json({ message: "Lawyer created successfully", lawyer });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to create lawyer" });
+    res.status(500).json({ message: "Error creating lawyer" });
+  }
+};
+// Get all lawyers
+export const getAllLawyers = async (req, res) => {
+  try {
+    const lawyers = await Lawyer.find();
+    res.json(lawyers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching lawyers" });
+  }
+};
+
+// Delete lawyer
+export const deleteLawyer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Lawyer.findByIdAndDelete(id);
+    res.json({ message: "Lawyer deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error deleting lawyer" });
   }
 };
 

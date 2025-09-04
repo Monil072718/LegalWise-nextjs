@@ -1,6 +1,8 @@
 import express from "express";
 import { protect } from "../middlewares/authMiddleware.js";
 import { requireRole } from "../middlewares/roleMiddleware.js";
+import { createLawyer, getAllLawyers, deleteLawyer } from "../controllers/adminLawyerController.js";
+import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 import {
   createLawyer,
   listLawyers,
@@ -17,7 +19,9 @@ router.use(protect, requireRole("ADMIN"));
 
 router.get("/dashboard", adminDashboard);
 router.get("/lawyers", listLawyers);
-router.post("/lawyers", createLawyer);
+router.post("/lawyers", protect, adminOnly, createLawyer);
+router.get("/lawyers", protect, adminOnly, getAllLawyers);
+router.delete("/lawyers/:id", protect, adminOnly, deleteLawyer);
 router.patch("/lawyers/:id", updateLawyerProfile);
 router.patch("/lawyers/:id/availability", setLawyerAvailability);
 
