@@ -1,8 +1,10 @@
+// backend/middlewares/authMiddleware.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Lawyer from "../models/Lawyer.js";
 import Admin from "../models/Admin.js";
 
+// 🔹 Verify JWT token & attach user to req
 export const protect = async (req, res, next) => {
   let token;
 
@@ -11,28 +13,23 @@ export const protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     try {
-      // Get token from header
       token = req.headers.authorization.split(" ")[1];
 
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Attach user to request based on role
-      let user =
+      // check in all 3 collections
+      req.user =
         (await User.findById(decoded.id).select("-password")) ||
         (await Lawyer.findById(decoded.id).select("-password")) ||
         (await Admin.findById(decoded.id).select("-password"));
 
-      if (!user) {
+      if (!req.user) {
         return res.status(401).json({ message: "User not found" });
       }
 
-      req.user = user;
-      req.role = decoded.role;
-
       next();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       return res.status(401).json({ message: "Not authorized, token failed" });
     }
   }
@@ -41,3 +38,14 @@ export const protect = async (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, no token" });
   }
 };
+
+// 🔹 Restrict route access by role
+export const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    next();
+  };
+};
+
