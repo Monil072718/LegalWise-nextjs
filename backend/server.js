@@ -17,7 +17,6 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import billingRoutes from "./routes/billingRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 

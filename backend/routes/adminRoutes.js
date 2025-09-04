@@ -1,7 +1,5 @@
 import express from "express";
-import { protect } from "../middlewares/authMiddleware.js";
 import { requireRole } from "../middlewares/roleMiddleware.js";
-import { createLawyer, getAllLawyers, deleteLawyer } from "../controllers/adminLawyerController.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 import {
   createLawyer,
@@ -10,7 +8,7 @@ import {
   setLawyerAvailability,
   assignClientToLawyer,
   adminDashboard,
-  revenueReport,
+  revenueReport, getAllLawyers, deleteLawyer
 } from "../controllers/adminLawyerController.js";
 
 const router = express.Router();
