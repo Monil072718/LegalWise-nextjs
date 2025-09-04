@@ -12,6 +12,7 @@ import {
   getAllLawyers,
   deleteLawyer,
 } from "../controllers/adminLawyerController.js";
+import { registerAdmin } from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -34,5 +35,8 @@ router.post("/assign-client", assignClientToLawyer);
 
 // Reports
 router.get("/reports/revenue", revenueReport);
+
+// 🚨 Only for initial setup
+router.post("/register", registerAdmin);
 
 export default router;
