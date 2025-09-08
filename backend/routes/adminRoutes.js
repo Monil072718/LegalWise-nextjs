@@ -37,6 +37,6 @@ router.post("/assign-client", assignClientToLawyer);
 router.get("/reports/revenue", revenueReport);
 
 // 🚨 Only for initial setup
-router.post("/register", registerAdmin);
+router.post("/init-register", registerAdmin);
 
 export default router;
