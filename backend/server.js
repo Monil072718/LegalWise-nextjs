@@ -1,16 +1,23 @@
-import dotenv from "dotenv";
-import app from "./src/app.js";
-import connectDB from "./src/config/db.js";
+import express from 'express';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import mainRouter from './routes/mainRouter.js';
 
 dotenv.config();
+
+const app = express();
+
+// Connect to database
+connectDB();
+
+// Middleware
+app.use(express.json());
+
+// Routes
+app.use('/api', mainRouter);
+
 const PORT = process.env.PORT || 8000;
 
-// Connect to DB
-connectDB();
-console.log("MONGO_URI:", process.env.MONGO_URI);
-
-
-// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
